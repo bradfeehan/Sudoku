@@ -9,21 +9,29 @@
 /* Begin PBXBuildFile section */
 		809E237D247510D400DC7C12 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E237C247510D400DC7C12 /* AppDelegate.swift */; };
 		809E237F247510D400DC7C12 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E237E247510D400DC7C12 /* SceneDelegate.swift */; };
-		809E2381247510D400DC7C12 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E2380247510D400DC7C12 /* ContentView.swift */; };
+		809E2381247510D400DC7C12 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E2380247510D400DC7C12 /* BoardView.swift */; };
 		809E2383247510D900DC7C12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 809E2382247510D900DC7C12 /* Assets.xcassets */; };
 		809E2386247510D900DC7C12 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 809E2385247510D900DC7C12 /* Preview Assets.xcassets */; };
 		809E2389247510D900DC7C12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 809E2387247510D900DC7C12 /* LaunchScreen.storyboard */; };
+		809E239124752AF700DC7C12 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E239024752AF700DC7C12 /* Board.swift */; };
+		809E239324752C1900DC7C12 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E239224752C1900DC7C12 /* MainView.swift */; };
+		809E23952475377900DC7C12 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E23942475377900DC7C12 /* ControlsView.swift */; };
+		809E239724755A3B00DC7C12 /* CartesianProductCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809E239624755A3B00DC7C12 /* CartesianProductCollection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		809E2379247510D400DC7C12 /* Sudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		809E237C247510D400DC7C12 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		809E237E247510D400DC7C12 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		809E2380247510D400DC7C12 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		809E2380247510D400DC7C12 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		809E2382247510D900DC7C12 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		809E2385247510D900DC7C12 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		809E2388247510D900DC7C12 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		809E238A247510D900DC7C12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		809E239024752AF700DC7C12 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
+		809E239224752C1900DC7C12 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		809E23942475377900DC7C12 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
+		809E239624755A3B00DC7C12 /* CartesianProductCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartesianProductCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,11 +66,15 @@
 			children = (
 				809E237C247510D400DC7C12 /* AppDelegate.swift */,
 				809E237E247510D400DC7C12 /* SceneDelegate.swift */,
-				809E2380247510D400DC7C12 /* ContentView.swift */,
 				809E2382247510D900DC7C12 /* Assets.xcassets */,
 				809E2387247510D900DC7C12 /* LaunchScreen.storyboard */,
 				809E238A247510D900DC7C12 /* Info.plist */,
 				809E2384247510D900DC7C12 /* Preview Content */,
+				809E239024752AF700DC7C12 /* Board.swift */,
+				809E2380247510D400DC7C12 /* BoardView.swift */,
+				809E239224752C1900DC7C12 /* MainView.swift */,
+				809E23942475377900DC7C12 /* ControlsView.swift */,
+				809E239624755A3B00DC7C12 /* CartesianProductCollection.swift */,
 			);
 			path = Sudoku;
 			sourceTree = "<group>";
@@ -147,8 +159,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				809E237D247510D400DC7C12 /* AppDelegate.swift in Sources */,
+				809E239724755A3B00DC7C12 /* CartesianProductCollection.swift in Sources */,
 				809E237F247510D400DC7C12 /* SceneDelegate.swift in Sources */,
-				809E2381247510D400DC7C12 /* ContentView.swift in Sources */,
+				809E239124752AF700DC7C12 /* Board.swift in Sources */,
+				809E239324752C1900DC7C12 /* MainView.swift in Sources */,
+				809E23952475377900DC7C12 /* ControlsView.swift in Sources */,
+				809E2381247510D400DC7C12 /* BoardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

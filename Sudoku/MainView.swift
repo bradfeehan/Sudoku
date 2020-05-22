@@ -29,9 +29,11 @@ struct MainView: View {
 
     private func handleBoardTap(_ cell: Board.Cell) {
         switch self.state {
-        case let .Button(.Digit(digit)):
-            self.modify(cell: cell.location, to: digit)
-        case .None:
+        case let ControlsView.State.Digit(digit):
+            self.modify(cell: cell.location, to: .Value(digit))
+        case let .Notes(digit) where digit != nil:
+            self.modify(cell: cell.location, to: .Note([digit!]))
+        default:
             if self.selection == cell.location {
                 self.selection = nil
             } else {
@@ -41,36 +43,73 @@ struct MainView: View {
     }
 
     private func handleControlsTap(_ button: ControlsView.Button) {
-        switch button {
-        case let .Digit(digit):
-            if let selection = self.selection {
-                self.modify(cell: selection, to: digit)
-            } else {
-                self.toggleButtonState(button)
-            }
-        }
-    }
+        switch (button, self.state, self.selection) {
 
-    private func modify(cell: Board.Location, to digit: Board.Cell.Digit) {
-        let value: Board.Cell.Value
-        if self.boardContainer.board[cell]?.value == .Value(digit) {
-            value = .Empty
-        } else {
-            value = .Value(digit)
-        }
+        // Modify selected cell
+        case let (.Digit(digit), .None, .some(selection)):
+            self.modify(cell: selection, to: .Value(digit))
 
-        DispatchQueue.main.async {
-            self.boardContainer.objectWillChange.send()
-            self.boardContainer.board[cell]?.value = value
-        }
-    }
+        case let (.Digit(digit), .Notes(nil), .some(selection)):
+            self.modify(cell: selection, to: .Note([digit]))
 
-    private func toggleButtonState(_ button: ControlsView.Button) {
-        switch self.state {
-        case .Button(button):
+        // De-select selected button
+        case let (.Digit(pressed), .Digit(selected), _) where pressed == selected:
             self.state = .None
-        default:
-            self.state = .Button(button)
+
+        case (.Notes, .Notes(nil), _):
+            self.state = .None
+
+        // Select un-selected button
+        case let (.Digit(digit), .None, nil),
+             let (.Digit(digit), .Digit, _):
+            self.state = .Digit(digit)
+
+        case (.Notes, .None, _):
+            self.state = .Notes(nil)
+
+        // Switch notes on and off
+        case let (.Digit(pressed), .Notes(.some(selected)), _) where pressed == selected:
+            self.state = .Notes(nil)
+
+        case let (.Notes, .Digit(digit), _),
+             let (.Digit(digit), .Notes, _):
+            self.state = .Notes(digit)
+
+        case let (.Notes, .Notes(.some(digit)), _):
+            self.state = .Digit(digit)
+        }
+    }
+
+    private func modify(cell: Board.Location, to newValue: Board.Cell.Value) {
+        guard let value = self.boardContainer.board[cell]?.value else {
+            return
+        }
+
+        let finalValue: Board.Cell.Value
+
+        switch (value, newValue) {
+        // Remove current digit
+        case let (.Value(digit), .Value(newDigit)) where digit == newDigit:
+            finalValue = .Empty
+
+        // Add note
+        case let (.Note(notes), .Note(newNotes)) where notes.isDisjoint(with: newNotes):
+            finalValue = .Note(notes.union(newNotes))
+
+        // Remove note
+        case let (.Note(notes), .Note(newNotes)) where notes.isSuperset(of: newNotes):
+            finalValue = .Note(notes.subtracting(newNotes))
+
+        // Add digit/note to empty cell, or overwrite current digit with new digit/note
+        case (.Empty, _), (.Value, _), (.Note, _):
+            finalValue = newValue
+        }
+
+        if finalValue != value {
+            DispatchQueue.main.async {
+                self.boardContainer.objectWillChange.send()
+                self.boardContainer.board[cell]?.value = finalValue
+            }
         }
     }
 }

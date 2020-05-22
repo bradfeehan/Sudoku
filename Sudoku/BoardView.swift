@@ -5,6 +5,7 @@ struct BoardView: View {
     private static let borderCount = cellCount + 1
     private static let borderWidth = CGFloat(1)
     private static let roomForBorders = (borderCount * borderWidth)
+    private static let notesAxisLength = Int(Float(Board.axisLength).squareRoot().rounded(.up))
 
     @Binding private var board: Board
     @Binding private var selection: Board.Location?
@@ -39,12 +40,16 @@ struct BoardView: View {
                         ForEach(row) { cell in
                             Group {
                                 Button(action: { self.onTapGesture(cell) }) {
-                                    self.cellView(cell).foregroundColor(Color(UIColor.label))
+                                    self.cellView(cell)
+                                        .font(.system(size: 500))
+                                        .minimumScaleFactor(0.001)
+                                        .scaledToFit()
+                                        .frame(
+                                            width: self.cellSize,
+                                            height: self.cellSize
+                                        )
+                                        .foregroundColor(Color(UIColor.label))
                                 }
-                                .frame(
-                                    width: self.cellSize,
-                                    height: self.cellSize
-                                )
                                 .background(
                                     self.selection == cell.location ? Color.blue : Color.clear
                                 )
@@ -75,6 +80,7 @@ struct BoardView: View {
                     if let boardSize = maybeBoardSize {
                         self.boardSize = boardSize
                         self.cellSize = (boardSize - Self.roomForBorders) / Self.cellCount
+                        self.notesSubCellSize = (boardSize - Self.roomForBorders) / (Self.cellCount * CGFloat(Self.notesAxisLength))
                     }
                 }
                 return Color.clear
@@ -82,10 +88,42 @@ struct BoardView: View {
         )
     }
 
-    private func cellView(_ cell: Board.Cell) -> some View {
+    private func cellView(_ cell: Board.Cell) -> AnyView {
         switch cell.value {
-        case .Empty: return Text(" ")
-        case let .Value(digit): return Text(String(describing: digit))
+        case .Empty:
+            return AnyView(Spacer())
+        case let .Value(digit):
+            return AnyView(Text(String(describing: digit)))
+        case let .Note(digits):
+            return AnyView(self.notesView(digits))
+        }
+    }
+
+    private func notesView(_ digits: Set<Board.Cell.Digit>) -> some View {
+        VStack(spacing: 0) {
+            ForEach(0..<Self.notesAxisLength) { row in
+                HStack(spacing: 0) {
+                    ForEach(0..<Self.notesAxisLength) { column in
+                        Group {
+                            self.notesSubView(digits, row, column)
+                                .frame(
+                                    width: self.notesSubCellSize,
+                                    height: self.notesSubCellSize
+                                )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func notesSubView(_ digits: Set<Board.Cell.Digit>, _ row: Board.Location.Coordinate, _ column: Board.Location.Coordinate) -> Text {
+        let index = Int(row * Self.notesAxisLength + column + 1)
+
+        if let digit = Board.Cell.Digit(rawValue: index), digits.contains(digit) {
+            return Text(String(describing: digit))
+        } else {
+            return Text(" ")
         }
     }
 
@@ -118,19 +156,28 @@ struct BoardView: View {
 struct BoardView_Previews: PreviewProvider {
     static private var dimensions: CGFloat = UIScreen.main.bounds.width + 40
 
-    @State static private var board = Board()
+    static private var board = Binding<Board>(
+        get: {
+            let b = Board()
+            b[Board.Location(row: 2, column: 5)]?.value = .Value(._9)
+            b[Board.Location(row: 4, column: 7)]?.value = .Note([._9])
+            return b
+        },
+        set: { newValue in }
+    )
+
     @State static private var selection: Board.Location? = nil
 
     static var previews: some View {
         Group {
-            BoardView($board, selection: $selection)
+            BoardView(board, selection: $selection)
                 .padding()
                 .previewLayout(.fixed(width: Self.dimensions, height: Self.dimensions))
                 .previewDisplayName("Light Mode")
 
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
-                BoardView($board, selection: $selection)
+                BoardView(board, selection: $selection)
                     .padding()
             }
                 .previewLayout(.fixed(width: Self.dimensions, height: Self.dimensions))

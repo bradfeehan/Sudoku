@@ -29,7 +29,9 @@ class Board: ObservableObject {
         var value: Value
 
         enum Value: Equatable {
-            case Empty, Value(Digit)
+            case Empty
+            case Value(Digit)
+            case Note(Set<Digit>)
         }
 
         enum Digit: Int, CaseIterable, Equatable {
@@ -125,6 +127,7 @@ extension Board.Cell.Value: CustomDebugStringConvertible {
         switch self {
         case .Empty: return " "
         case let .Value(digit): return digit.description
+        case .Note: return "?"
         }
     }
 }
